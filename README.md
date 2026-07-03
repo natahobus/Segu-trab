@@ -4,7 +4,7 @@ Assistente interno para corretores da SeguraMais (corretora fictícia). É um ch
 
 ## Ideia do projeto
 
-Não é um chatbot genérico. A proposta é ajudar o corretor no meio do trabalho, quando surge uma dúvida rápida: diferença entre tipos de franquia, como orientar um cliente num sinistro, terminologia do setor, esse tipo de coisa. Como quem usa já é do ramo, as respostas são diretas, sem ficar explicando o óbvio.
+ A proposta é ajudar o corretor no meio do trabalho, quando surge uma dúvida rápida: diferença entre tipos de franquia, como orientar um cliente num sinistro, terminologia do setor, esse tipo de coisa. Como quem usa já é do ramo, as respostas são diretas, sem ficar explicando o óbvio.
 
 A conversa guarda o histórico durante a sessão, então dá pra fazer perguntas de seguida sem perder o contexto.
 
