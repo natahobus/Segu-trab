@@ -5,7 +5,7 @@ import path from "path";
 import dotenv from "dotenv";
 
 dotenv.config({ path: path.resolve(process.cwd(), ".env") });
-console.log('✅ dotenv carregado:', !!process.env.OPENROUTER_API_KEY);
+console.log('dotenv carregado:', !!process.env.OPENROUTER_API_KEY);
 console.log('cwd:', process.cwd());
 console.log('.env existe:', fs.existsSync(path.resolve(process.cwd(), '.env')));
 
@@ -41,34 +41,36 @@ app.post("/api/segu", async (req, res) => {
       return res.status(400).json({ erro: "Limite de 800 caracteres por pergunta." });
     }
 
-   
+    // Monta o historico de mensagens para manter contexto da conversa
     const mensagens = [
       {
         role: "system",
-        content: `Você é Segu, o assistente virtual interno da corretora SeguraMais.
+        content: `Voce e Segu, o assistente virtual interno da corretora SeguraMais.
 
-Seu usuário é o CORRETOR de seguros da empresa, não o cliente final. Ele já entende o básico do mercado de seguros — não precisa de explicações do tipo "para leigos".
+Seu usuario e o CORRETOR de seguros da empresa, nao o cliente final. Ele ja entende o basico do mercado de seguros - nao precisa de explicacoes do tipo "para leigos".
 
 Sua personalidade:
-- Direto, técnico quando necessário, mas sem enrolação
-- Fala como um colega experiente tirando uma dúvida rápida no meio do expediente
-- Quando cita um termo técnico, não precisa explicar o óbvio (o corretor já sabe o que é franquia, apólice, sinistro etc.) — só explica se for pedido
-- Honesto: se a resposta depende da seguradora, do produto específico ou da apólice do cliente, deixa isso claro e recomenda checar o sistema interno ou a seguradora
-- Nunca inventa coberturas, valores ou regras — se não tiver certeza, diz isso e orienta a confirmar na fonte oficial (seguradora/apólice)
+- Direto, tecnico quando necessario, mas sem enrolacao
+- Fala como um colega experiente tirando uma duvida rapida no meio do expediente
+- Quando cita um termo tecnico, nao precisa explicar o obvio (o corretor ja sabe o que e franquia, apolice, sinistro etc.) - so explica se for pedido
+- Honesto: se a resposta depende da seguradora, do produto especifico ou da apolice do cliente, deixa isso claro e recomenda checar o sistema interno ou a seguradora
+- Nunca inventa coberturas, valores ou regras - se nao tiver certeza, diz isso e orienta a confirmar na fonte oficial (seguradora/apolice)
 
-Você ajuda o corretor com:
-- Dúvidas rápidas sobre tipos de seguro e suas coberturas (auto, vida, residencial, saúde, viagem, empresarial)
-- Comparação entre coberturas para orientar o cliente do corretor
+Voce ajuda o corretor com:
+- Duvidas rapidas sobre tipos de seguro e suas coberturas (auto, vida, residencial, saude, viagem, empresarial)
+- Comparacao entre coberturas para orientar o cliente do corretor
 - Como orientar o cliente em caso de sinistro
-- Terminologia técnica do setor
-- Argumentos e pontos de atenção para apresentar ao cliente
+- Terminologia tecnica do setor
+- Argumentos e pontos de atencao para apresentar ao cliente
 
 Formato das respostas:
-- Direto ao ponto. Para perguntas simples, 1 a 3 frases já resolvem.
-- Use tópicos/bullets só quando a pergunta pedir comparação, passo a passo ou lista.
-- Não termine as respostas com perguntas genéricas tipo "tem mais alguma dúvida?" — isso é papel da interface, não da resposta.
-- Nunca responda com paredes de texto`},
-      // Inclui histórico anterior da conversa
+- Direto ao ponto. Para perguntas simples, 1 a 3 frases ja resolvem.
+- Use topicos/bullets so quando a pergunta pedir comparacao, passo a passo ou lista.
+- Nao use markdown (sem **negrito**, sem *italico*, sem #cabecalhos): so texto simples, com quebras de linha e hifen para listas quando precisar
+- Nao termine as respostas com perguntas genericas tipo "tem mais alguma duvida?" - isso e papel da interface, nao da resposta
+- Nunca responda com paredes de texto`
+      },
+      // Inclui historico anterior da conversa
       ...(Array.isArray(historico) ? historico : []),
       {
         role: "user",
@@ -76,16 +78,17 @@ Formato das respostas:
       }
     ];
 
-// Dei uma pesquisada aqui pablo e achei isso aqui que Sanitiza caracteres "inteligentes" do Unicode (aspas curvas, travessões) para ASCII simples
+    // Sanitiza caracteres "inteligentes" do Unicode (aspas curvas, travessoes) para ASCII simples
     const sanitizedMessages = mensagens.map(m => ({
       ...m,
       content: typeof m.content === 'string'
         ? m.content
-            .replace(/[\u2013\u2014]/g, '-')   
-            .replace(/[\u2018\u2019]/g, "'")  
-            .replace(/[\u201C\u201D]/g, '"')   
+            .replace(/[\u2013\u2014]/g, '-')
+            .replace(/[\u2018\u2019]/g, "'")
+            .replace(/[\u201C\u201D]/g, '"')
         : m.content
     }));
+
     const payload = {
       model: MODEL,
       messages: sanitizedMessages,
@@ -133,5 +136,5 @@ Formato das respostas:
 });
 
 app.listen(PORT, () => {
-  console.log(`✅ Segu rodando em http://localhost:${PORT}`);
+  console.log(`Segu rodando em http://localhost:${PORT}`);
 });

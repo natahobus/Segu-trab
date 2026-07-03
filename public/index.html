@@ -33,7 +33,6 @@
       align-items: center;
     }
 
-    /* Header */
     header {
       width: 100%;
       max-width: 700px;
@@ -80,7 +79,6 @@
       border-radius: 99px;
     }
 
-    /* Chat area */
     #chat {
       flex: 1;
       width: 100%;
@@ -92,7 +90,6 @@
       gap: 16px;
     }
 
-    /* Mensagens */
     .msg {
       display: flex;
       gap: 10px;
@@ -147,7 +144,6 @@
       border-top-right-radius: 4px;
     }
 
-    /* Digitando */
     .typing .bubble {
       display: flex;
       gap: 5px;
@@ -170,7 +166,6 @@
       40% { transform: translateY(-6px); }
     }
 
-    /* Perguntas sugeridas */
     .sugestoes {
       display: flex;
       flex-wrap: wrap;
@@ -193,7 +188,6 @@
 
     .sugestao-btn:hover { background: #dbeafe; }
 
-    /* Input */
     .input-area {
       width: 100%;
       max-width: 700px;
@@ -268,11 +262,11 @@
   </div>
 
   <script>
-    // Histórico de mensagens para manter contexto com a IA
+    // Historico de mensagens para manter contexto com a IA
     const historico = [];
 
-    // Perguntas sugeridas iniciais
-   const sugestoes = [
+    // Perguntas sugeridas iniciais (do ponto de vista do corretor)
+    const sugestoes = [
       "Diferença entre franquia fixa e percentual",
       "Como orientar cliente em caso de sinistro de auto",
       "Seguro residencial cobre alagamento?",
@@ -282,7 +276,7 @@
 
     // Mensagem de boas-vindas
     window.onload = () => {
-      adicionarMensagem("segu", `Olá! 👋 Sou o **Segu**, assistente interno de apoio ao corretor da SeguraMais.
+      adicionarMensagem("segu", `Olá! 👋 Sou o Segu, assistente interno de apoio ao corretor da SeguraMais.
 
 Tira dúvidas rápidas sobre coberturas, termos técnicos e como orientar seus clientes.
 
@@ -291,7 +285,7 @@ No que posso ajudar?`);
       mostrarSugestoes();
     };
 
-     function mostrarSugestoes() {
+    function mostrarSugestoes() {
       const antigas = document.getElementById("sugestoes");
       if (antigas) antigas.remove();
 
@@ -311,7 +305,7 @@ No que posso ajudar?`);
       });
       chat.appendChild(divSugestoes);
       chat.scrollTop = chat.scrollHeight;
-    };
+    }
 
     function adicionarMensagem(tipo, texto) {
       const chat = document.getElementById("chat");
@@ -325,7 +319,11 @@ No que posso ajudar?`);
 
       const bubble = document.createElement("div");
       bubble.className = "bubble";
-      bubble.textContent = texto.replace(/\*\*(.*?)\*\*/g, '$1'); // remove markdown bold simples
+      // Remove marcacao markdown simples (negrito e italico) que o modelo
+      // ocasionalmente ainda usa, mesmo com a instrucao no system prompt
+      bubble.textContent = texto
+        .replace(/\*\*(.*?)\*\*/g, '$1')
+        .replace(/\*(.*?)\*/g, '$1');
 
       msg.appendChild(avatarDiv);
       msg.appendChild(bubble);
@@ -364,6 +362,9 @@ No que posso ajudar?`);
       const input = document.getElementById("input");
       const pergunta = input.value.trim();
       if (!pergunta) return;
+
+      // Se a mensagem for muito curta ou vaga, nao gasta chamada de API -
+      // ja mostra as sugestoes de novo
       if (pergunta.length < 4) {
         input.value = "";
         input.style.height = "44px";
@@ -373,7 +374,8 @@ No que posso ajudar?`);
         input.focus();
         return;
       }
-      // Remove sugestões na primeira mensagem
+
+      // Remove sugestoes na primeira mensagem
       const sugestoesEl = document.getElementById("sugestoes");
       if (sugestoesEl) sugestoesEl.remove();
 
@@ -399,11 +401,11 @@ No que posso ajudar?`);
           return;
         }
 
-        // Adiciona ao histórico para manter contexto
+        // Adiciona ao historico para manter contexto
         historico.push({ role: "user", content: pergunta });
         historico.push({ role: "assistant", content: data.resposta });
 
-        // Mantém histórico em no máximo 10 trocas para não estourar o contexto
+        // Mantem historico em no maximo 10 trocas para nao estourar o contexto
         if (historico.length > 20) historico.splice(0, 2);
 
         adicionarMensagem("segu", data.resposta);
