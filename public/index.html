@@ -262,19 +262,19 @@
   </div>
 
   <script>
-    // Historico de mensagens para manter contexto com a IA
+    
     const historico = [];
 
-    // Perguntas sugeridas iniciais (do ponto de vista do corretor)
+    
     const sugestoes = [
       "Diferença entre franquia fixa e percentual",
       "Como orientar cliente em caso de sinistro de auto",
       "Seguro residencial cobre alagamento?",
       "Vale a pena vender seguro com franquia reduzida?",
-      "Carência: como explicar pro cliente"
+      "Carência: como posso explicar pro cliente"
     ];
 
-    // Mensagem de boas-vindas
+    
     window.onload = () => {
       adicionarMensagem("segu", `Olá! 👋 Sou o Segu, assistente interno de apoio ao corretor da SeguraMais.
 
@@ -319,8 +319,8 @@ No que posso ajudar?`);
 
       const bubble = document.createElement("div");
       bubble.className = "bubble";
-      // Remove marcacao markdown simples (negrito e italico) que o modelo
-      // ocasionalmente ainda usa, mesmo com a instrucao no system prompt
+      
+      
       bubble.textContent = texto
         .replace(/\*\*(.*?)\*\*/g, '$1')
         .replace(/\*(.*?)\*/g, '$1');
@@ -363,8 +363,8 @@ No que posso ajudar?`);
       const pergunta = input.value.trim();
       if (!pergunta) return;
 
-      // Se a mensagem for muito curta ou vaga, nao gasta chamada de API -
-      // ja mostra as sugestoes de novo
+      
+      
       if (pergunta.length < 4) {
         input.value = "";
         input.style.height = "44px";
@@ -375,7 +375,7 @@ No que posso ajudar?`);
         return;
       }
 
-      // Remove sugestoes na primeira mensagem
+      
       const sugestoesEl = document.getElementById("sugestoes");
       if (sugestoesEl) sugestoesEl.remove();
 
@@ -401,11 +401,11 @@ No que posso ajudar?`);
           return;
         }
 
-        // Adiciona ao historico para manter contexto
+        
         historico.push({ role: "user", content: pergunta });
         historico.push({ role: "assistant", content: data.resposta });
 
-        // Mantem historico em no maximo 10 trocas para nao estourar o contexto
+        
         if (historico.length > 20) historico.splice(0, 2);
 
         adicionarMensagem("segu", data.resposta);
@@ -419,7 +419,7 @@ No que posso ajudar?`);
       }
     }
 
-    // Enviar com Enter (Shift+Enter para nova linha)
+    
     document.getElementById("input").addEventListener("keydown", (e) => {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
@@ -427,7 +427,7 @@ No que posso ajudar?`);
       }
     });
 
-    // Auto-resize do textarea
+    
     document.getElementById("input").addEventListener("input", function() {
       this.style.height = "44px";
       this.style.height = Math.min(this.scrollHeight, 120) + "px";

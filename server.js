@@ -41,7 +41,7 @@ app.post("/api/segu", async (req, res) => {
       return res.status(400).json({ erro: "Limite de 800 caracteres por pergunta." });
     }
 
-    // Monta o historico de mensagens para manter contexto da conversa
+    
     const mensagens = [
       {
         role: "system",
@@ -71,7 +71,7 @@ Formato das respostas:
 - Nunca escreva mais de 120 palavras, a menos que o corretor peca explicitamente para detalhar mais
 - Nunca responda com paredes de texto`
       },
-      // Inclui historico anterior da conversa
+      
       ...(Array.isArray(historico) ? historico : []),
       {
         role: "user",
@@ -79,7 +79,7 @@ Formato das respostas:
       }
     ];
 
-    // Sanitiza caracteres "inteligentes" do Unicode (aspas curvas, travessoes) para ASCII simples
+  
     const sanitizedMessages = mensagens.map(m => ({
       ...m,
       content: typeof m.content === 'string'
