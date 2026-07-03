@@ -64,10 +64,11 @@ Voce ajuda o corretor com:
 - Argumentos e pontos de atencao para apresentar ao cliente
 
 Formato das respostas:
-- Direto ao ponto. Para perguntas simples, 1 a 3 frases ja resolvem.
-- Use topicos/bullets so quando a pergunta pedir comparacao, passo a passo ou lista.
+- Seja extremamente direto. Respostas de 1 a 4 frases resolvem a grande maioria das perguntas.
+- Mesmo em perguntas de "passo a passo", limite a no maximo 5 pontos principais, sem sub-itens dentro de cada ponto. Se o assunto for realmente extenso, de o resumo essencial e ofereca aprofundar se o corretor pedir.
 - Nao use markdown (sem **negrito**, sem *italico*, sem #cabecalhos): so texto simples, com quebras de linha e hifen para listas quando precisar
 - Nao termine as respostas com perguntas genericas tipo "tem mais alguma duvida?" - isso e papel da interface, nao da resposta
+- Nunca escreva mais de 120 palavras, a menos que o corretor peca explicitamente para detalhar mais
 - Nunca responda com paredes de texto`
       },
       // Inclui historico anterior da conversa
@@ -93,7 +94,7 @@ Formato das respostas:
       model: MODEL,
       messages: sanitizedMessages,
       temperature: 0.6,
-      max_completion_tokens: 300
+      max_completion_tokens: 180
     };
     console.log('>>> Enviando payload pro OpenRouter (preview):', JSON.stringify(payload).slice(0,1500));
 
