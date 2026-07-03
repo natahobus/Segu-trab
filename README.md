@@ -1,71 +1,61 @@
-# 🛡️ Segu — Assistente de Dúvidas de Seguros
+# Segu
 
-Assistente virtual de uma corretora de seguros fictícia chamada **SeguraMais**.
+Assistente interno para corretores da SeguraMais (corretora fictícia). É um chat que manda a pergunta do corretor pra um modelo de linguagem via OpenRouter e devolve a resposta na tela.
 
-O usuário conversa com o **Segu**, um atendente com persona própria que responde dúvidas sobre seguros em linguagem simples e acessível — sem jargão, sem enrolação.
+## Ideia do projeto
 
-A conversa mantém contexto entre as mensagens, ou seja, o Segu lembra o que foi dito antes e responde de forma coerente, como um atendimento real.
+Não é um chatbot genérico. A proposta é ajudar o corretor no meio do trabalho, quando surge uma dúvida rápida: diferença entre tipos de franquia, como orientar um cliente num sinistro, terminologia do setor, esse tipo de coisa. Como quem usa já é do ramo, as respostas são diretas, sem ficar explicando o óbvio.
 
----
+A conversa guarda o histórico durante a sessão, então dá pra fazer perguntas de seguida sem perder o contexto.
 
-## 💬 O que o Segu responde
+## Como funciona
 
-- O que cada tipo de seguro cobre (auto, vida, residencial, viagem, saúde)
-- Termos técnicos explicados: franquia, prêmio, apólice, sinistro, carência
-- Como acionar o seguro em caso de acidente, furto ou sinistro
-- Dicas para escolher o seguro certo para cada perfil
-- O que fazer quando a seguradora nega um pedido
+1. O corretor digita a pergunta (ou clica numa das sugestões que aparecem na tela inicial)
+2. O front (`public/index.html`) manda isso pro servidor (`server.js`)
+3. O servidor monta o histórico + a pergunta, junto com um system prompt que define como o Segu deve se comportar, e manda tudo pro modelo `openai/gpt-oss-120b:free` via OpenRouter
+4. A resposta volta e aparece no chat
 
----
+A chave da API fica só no back-end, no `.env`. O navegador nunca tem acesso a ela.
 
-## 📁 Estrutura do projeto
+Algumas validações no input: não deixa mandar pergunta vazia, bloqueia mensagens muito curtas tipo "a" ou "oi" (evita gastar chamada de API à toa, já mostra as sugestões de novo), e limita a 800 caracteres por pergunta.
+
+## Estrutura
 
 ```
 segu/
 ├── package.json
 ├── server.js
-├── .env              ← criar manualmente
+├── .env          <- você cria esse
 └── public/
     └── index.html
 ```
 
----
+## Como rodar
 
-## ⚙️ Como instalar e executar
-
-### 1. Instalar dependências
 ```bash
 npm install
 ```
 
-### 2. Criar o arquivo `.env`
+Cria um `.env` na raiz com:
 ```
 OPENROUTER_API_KEY=sua_chave_aqui
 ```
-> Obtenha sua chave em [openrouter.ai](https://openrouter.ai/). Nunca publique este arquivo.
+(pega a chave em openrouter.ai; não sobe esse arquivo pro git, ele já está no .gitignore)
 
-### 3. Rodar o servidor
+Depois:
 ```bash
 npm start
 ```
 
-### 4. Acessar no navegador
-```
-http://localhost:3000
-```
+E acessa `http://localhost:3000`.
 
----
+## Modelo usado
 
-## 🔌 Modelo utilizado
-`openai/gpt-oss-120b:free` via OpenRouter
+`openai/gpt-oss-120b:free`, via OpenRouter.
 
----
+## Erros comuns
 
-## ⚠️ Erros comuns
-
-| Erro | Causa |
-|------|-------|
-| Chave não encontrada | `.env` ausente ou variável com nome errado |
-| 401 | Chave da API inválida |
-| 429 | Limite de requisições atingido |
-| Não conecta | Esqueceu de rodar `npm start` |
+- **Chave não encontrada** - `.env` não existe ou o nome da variável está errado
+- **401** - chave inválida
+- **429** - o modelo free está sobrecarregado no provedor no momento. Acontece de vez em quando por ser um modelo gratuito, principalmente em horário de pico. Espera um pouco e tenta de novo, ou coloca créditos próprios na OpenRouter pra aumentar o limite (ela mesma orienta isso no erro)
+- **Não conecta** - esqueceu de rodar `npm start`

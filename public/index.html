@@ -272,23 +272,29 @@
     const historico = [];
 
     // Perguntas sugeridas iniciais
-    const sugestoes = [
-      "O que é franquia?",
-      "Seguro cobre enchente?",
-      "Como acionar o seguro do carro?",
-      "Qual seguro devo contratar primeiro?",
-      "O que é carência?"
+   const sugestoes = [
+      "Diferença entre franquia fixa e percentual",
+      "Como orientar cliente em caso de sinistro de auto",
+      "Seguro residencial cobre alagamento?",
+      "Vale a pena vender seguro com franquia reduzida?",
+      "Carência: como explicar pro cliente"
     ];
 
     // Mensagem de boas-vindas
     window.onload = () => {
-      adicionarMensagem("segu", `Olá! 👋 Eu sou o **Segu**, seu assistente de seguros da SeguraMais.
+      adicionarMensagem("segu", `Olá! 👋 Sou o **Segu**, assistente interno de apoio ao corretor da SeguraMais.
 
-Pode me perguntar qualquer coisa sobre seguros — auto, vida, residencial, viagem e muito mais. Aqui não tem pergunta boba!
+Tira dúvidas rápidas sobre coberturas, termos técnicos e como orientar seus clientes.
 
-Sobre o que você quer saber?`);
+No que posso ajudar?`);
 
-      // Mostra sugestões
+      mostrarSugestoes();
+    };
+
+     function mostrarSugestoes() {
+      const antigas = document.getElementById("sugestoes");
+      if (antigas) antigas.remove();
+
       const chat = document.getElementById("chat");
       const divSugestoes = document.createElement("div");
       divSugestoes.className = "sugestoes";
@@ -304,6 +310,7 @@ Sobre o que você quer saber?`);
         divSugestoes.appendChild(btn);
       });
       chat.appendChild(divSugestoes);
+      chat.scrollTop = chat.scrollHeight;
     };
 
     function adicionarMensagem(tipo, texto) {
@@ -357,7 +364,15 @@ Sobre o que você quer saber?`);
       const input = document.getElementById("input");
       const pergunta = input.value.trim();
       if (!pergunta) return;
-
+      if (pergunta.length < 4) {
+        input.value = "";
+        input.style.height = "44px";
+        adicionarMensagem("user", pergunta);
+        adicionarMensagem("segu", "Não entendi bem sua pergunta 🤔 Aqui estão algumas dúvidas comuns, ou digite sua pergunta com mais detalhes:");
+        mostrarSugestoes();
+        input.focus();
+        return;
+      }
       // Remove sugestões na primeira mensagem
       const sugestoesEl = document.getElementById("sugestoes");
       if (sugestoesEl) sugestoesEl.remove();
