@@ -30,7 +30,7 @@ segu/
     └── index.html
 ```
 
-## Como rodar
+## Como rodar o projeto
 
 ```bash
 npm install
